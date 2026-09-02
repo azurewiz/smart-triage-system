@@ -27,3 +27,12 @@ source venv/bin/activate
 pip install -r requirements.txt  # or just scikit-learn, pandas, skl2onnx
 python train_model.py
 cp priority_model.onnx ../backend/src/main/resources/
+
+
+
+graph LR
+    A[Client] --> B[Spring Boot REST API]
+    B --> C[ONNX Runtime (JVM)]
+    C --> D[ONNX Model]
+    B --> E[(PostgreSQL)]
+    E --> F[Audit Logs]
