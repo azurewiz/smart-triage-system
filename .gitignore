@@ -1,0 +1,14 @@
+# Python virtual environments
+ml-model/venv/
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+
+# Compiled Java
+backend/target/
+*.class
+
+# OS files
+.DS_Store
