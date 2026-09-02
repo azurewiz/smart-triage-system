@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: triage_postgres
+    environment:
+      POSTGRES_USER: admin          # <-- Hardcoded. You'll never forget this.
+      POSTGRES_PASSWORD: admin123   # <-- Hardcoded. 
+      POSTGRES_DB: triage_db        # <-- The database name.
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: triage_app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      # These override the application.properties defaults
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/triage_db
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin123
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
