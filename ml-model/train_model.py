@@ -27,7 +27,7 @@ print(f"Scaler mean: {scaler.mean_}, Scale: {scaler.scale_}")
 
 # Convert to ONNX
 initial_type = [('float_input', FloatTensorType([None, 5]))]
-onnx_model = convert_sklearn(model, initial_types=initial_type)
+onnx_model = convert_sklearn(model, initial_types=initial_type, target_opset=12)
 
 with open("priority_model.onnx", "wb") as f:
     f.write(onnx_model.SerializeToString())

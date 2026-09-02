@@ -1,6 +1,5 @@
-FROM openjdk:17-jdk-slim
+FROM amazoncorretto:17
 WORKDIR /app
-# Copy the fat jar built by Maven
-COPY backend/target/*.jar app.jar
+COPY backend/target/demo-0.0.1-SNAPSHOT.jar app.jar
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]

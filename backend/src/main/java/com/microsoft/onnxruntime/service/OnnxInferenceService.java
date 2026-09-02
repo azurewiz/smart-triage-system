@@ -25,7 +25,6 @@ public class OnnxInferenceService {
             }
             session = environment.createSession(modelStream.readAllBytes());
         } catch (Exception e) {
-            // Wrap any checked exception (IO, etc.) into an unchecked RuntimeException
             throw new RuntimeException("Failed to load ONNX model", e);
         }
     }
@@ -33,8 +32,18 @@ public class OnnxInferenceService {
     public double predict(float[] features) throws OrtException {
         OnnxTensor tensor = OnnxTensor.createTensor(environment, new float[][]{features});
         try (OrtSession.Result result = session.run(java.util.Collections.singletonMap("float_input", tensor))) {
-            float[][] output = (float[][]) result.get(0).getValue();
-            return output[0][1];
+            Object output = result.get(0).getValue();
+            
+            // Handle both probability (float[][]) and class (long[]) outputs
+            if (output instanceof float[][]) {
+                float[][] probs = (float[][]) output;
+                return probs[0][1]; // probability of class 1 (HIGH)
+            } else if (output instanceof long[]) {
+                long[] classes = (long[]) output;
+                return classes[0]; // 0 or 1
+            } else {
+                throw new RuntimeException("Unexpected output type: " + output.getClass().getName());
+            }
         }
     }
 
