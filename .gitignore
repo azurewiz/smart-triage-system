@@ -12,3 +12,8 @@ backend/target/
 
 # OS files
 .DS_Store
+# Python cache
+__pycache__/
+*.pyc
+*.pkl
+ml-model/priority_model.onnx
