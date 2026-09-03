@@ -30,9 +30,3 @@ cp priority_model.onnx ../backend/src/main/resources/
 
 
 
-graph LR
-    A[Client] --> B[Spring Boot REST API]
-    B --> C[ONNX Runtime (JVM)]
-    C --> D[ONNX Model]
-    B --> E[(PostgreSQL)]
-    E --> F[Audit Logs]
