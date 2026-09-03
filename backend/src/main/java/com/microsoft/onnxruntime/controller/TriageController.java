@@ -3,6 +3,7 @@ package com.microsoft.onnxruntime.controller;
 import com.microsoft.onnxruntime.entity.TicketEntity;
 import com.microsoft.onnxruntime.repo.TicketRepo;
 import com.microsoft.onnxruntime.service.OnnxInferenceService;
+import com.microsoft.onnxruntime.service.FeatureExtractor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,7 +36,8 @@ public class TriageController {
                        (text.toLowerCase().contains("asap") ? 1 : 0);
         float hour = (float) LocalTime.now().getHour() / 24.0f;
 
-        float[] features = {length, exclam, caps, urgent, hour};
+       
+        float[] features = FeatureExtractor.extractFeatures(text);
         double score = onnxService.predict(features);
         String priority = score > 0.5 ? "HIGH" : "LOW";
 
