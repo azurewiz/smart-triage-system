@@ -11,15 +11,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      
       - name: Set up JDK 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           java-version: '17'
           distribution: 'corretto'
-          cache: 'maven'
+      
       - name: Make mvnw executable
         run: chmod +x backend/mvnw
-      - name: Build Spring Boot app
+      
+      - name: Build Spring Boot app (compile only)
         run: |
           cd backend
           ./mvnw clean compile -DskipTests
@@ -28,19 +30,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-          cache: 'pip'
+      
       - name: Install Python dependencies
         run: |
           cd ml-model
           pip install scikit-learn pandas skl2onnx pytest
+      
       - name: Run Python training script (smoke test)
         run: |
           cd ml-model
           python3 train_model.py
+      
       - name: Run Python feature extraction tests
         run: |
           cd ml-model
