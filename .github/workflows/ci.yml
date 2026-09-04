@@ -11,19 +11,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'corretto'
           cache: 'maven'
-      
-      # CRITICAL FIX: Make Maven wrapper executable
       - name: Make mvnw executable
         run: chmod +x backend/mvnw
-      
-      - name: Build Spring Boot app (compile only)
+      - name: Build Spring Boot app
         run: |
           cd backend
           ./mvnw clean compile -DskipTests
@@ -32,26 +28,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
           cache: 'pip'
-      
-      # CRITICAL FIX: Install pytest too!
       - name: Install Python dependencies
         run: |
           cd ml-model
-          pip install scikit-learn pandas skl2onnx onnx pytest
-      
+          pip install scikit-learn pandas skl2onnx pytest
       - name: Run Python training script (smoke test)
         run: |
           cd ml-model
           python3 train_model.py
-      
-      # FIX: Only run pytest if test_features.py exists
       - name: Run Python feature extraction tests
         run: |
           cd ml-model
-          if [ -f test_features.py ]; then pytest test_features.py; else echo "⚠️ test_features.py not found, skipping tests."; fi
+          pytest test_features.py
